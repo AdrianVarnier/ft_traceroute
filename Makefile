@@ -2,6 +2,9 @@ SRC =	main.c \
 		display.c \
 		parse.c \
 		network.c \
+		exit.c \
+		icmp.c \
+		ft_traceroute.c \
 
 INC =	ft_traceroute.h \
 
