@@ -6,6 +6,7 @@ static void    free_data(t_data *data)
 {
     freeaddrinfo(data->addr);
     close(data->sock_icmp);
+    close(data->sock_udp);
 }
 
 void    exit_clean(int n)

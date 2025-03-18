@@ -16,29 +16,13 @@
 #include <netinet/ip_icmp.h>
 #include <arpa/inet.h>
 
-typedef struct s_pseudo_udp_header
-{
-    u_int32_t source_address;
-    u_int32_t dest_address;
-    u_int8_t placeholder;
-    u_int8_t protocol;
-    u_int16_t udp_length;
-    struct udphdr   header_udp;
-    char            payload[32];
-} t_pseudo_udp_header;
+#define PORT 33434
 
 typedef struct s_icmp_packet
 {
     struct icmphdr  header;
     char            payload[52];
 } t_icmp_packet;
-
-typedef struct s_udp_packet
-{
-    struct iphdr    header_ip;
-    struct udphdr   header_udp;
-    char            payload[32];
-} t_udp_packet;
 
 typedef struct  s_response
 {
@@ -53,6 +37,7 @@ typedef struct  s_response
 typedef struct s_data
 {
     int                 sock_icmp;
+    int                 sock_udp;
     int                 hop;
     int                 max_hop;
     int                 max_probe;
@@ -61,7 +46,6 @@ typedef struct s_data
     struct timeval      timeout;
     struct addrinfo*    addr;
     t_icmp_packet       packet_icmp;
-    t_udp_packet        packet_udp;
     t_response          response;
 }              t_data;
 
@@ -83,8 +67,6 @@ void    handle_sigint(int sig);
 
 // packet.c
 void    set_icmp_header(t_data* data, int seq);
-void    set_ip_header(t_data* data, int seq, int ttl);
-void    set_udp_header(t_data* data);
 
 // ft_traceroute.c
 void    ft_traceroute(t_data *data);

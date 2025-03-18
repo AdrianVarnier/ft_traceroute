@@ -2,7 +2,9 @@
 
 void    init_socket(t_data* data)
 {
-    if ((data->sock_icmp = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0)
+    data->sock_icmp = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+    data->sock_udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); 
+    if (data->sock_icmp < 0 || data->sock_udp < 0)
         exit_clean(1);
     setsockopt(data->sock_icmp, SOL_SOCKET, SO_RCVTIMEO, &data->timeout, sizeof(data->timeout));
 }
