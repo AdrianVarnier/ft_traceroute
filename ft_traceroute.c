@@ -17,7 +17,7 @@ static void ft_traceroute_icmp(t_data *data)
             memset(&data->response.buffer, 0, sizeof(data->response.buffer));
             if (recvfrom(data->sock_icmp, data->response.buffer, sizeof(data->response.buffer), 0, (struct sockaddr*)&data->response.addr, &data->response.addr_len) <= 0)
             {
-                printf("*  ");
+                printf("* ");
                 continue ;
             }
             gettimeofday(&data->response.end, NULL);
@@ -48,7 +48,7 @@ static void ft_traceroute_udp(t_data* data)
             memset(&data->response.buffer, 0, sizeof(data->response.buffer));
             if (recvfrom(data->sock_icmp, data->response.buffer, sizeof(data->response.buffer), 0, (struct sockaddr*)&data->response.addr, &data->response.addr_len) <= 0)
             {
-                printf("*  ");
+                printf("* ");
                 continue ;
             }
             gettimeofday(&data->response.end, NULL);
