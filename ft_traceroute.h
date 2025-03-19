@@ -17,19 +17,21 @@
 #include <arpa/inet.h>
 
 #define PORT 33434
+#define PACKET_SIZE 60
+#define ICMPHDR_SIZE 8
 
 typedef struct s_icmp_packet
 {
     struct icmphdr  header;
-    char            payload[52];
+    char            payload[PACKET_SIZE - ICMPHDR_SIZE];
 } t_icmp_packet;
 
 typedef struct  s_response
 {
-    int                 is_addr_displayed;
     char                buffer[1024];
     struct sockaddr_in  addr;
     socklen_t           addr_len;
+    char                last_addr[INET_ADDRSTRLEN];
     struct timeval      start;
     struct timeval      end;
 } t_response;
@@ -46,6 +48,7 @@ typedef struct s_data
     struct timeval      timeout;
     struct addrinfo*    addr;
     t_icmp_packet       packet_icmp;
+    char                packet_udp[PACKET_SIZE];
     t_response          response;
 }              t_data;
 

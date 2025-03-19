@@ -26,12 +26,12 @@ static void ft_traceroute_icmp(t_data *data)
         printf("\n");
         if (data->response.addr.sin_addr.s_addr == ((struct sockaddr_in *)data->addr->ai_addr)->sin_addr.s_addr)
             exit_clean(0);
-        data->response.is_addr_displayed = 0;
     }
 }
 
 static void ft_traceroute_udp(t_data* data)
 {
+    int dest_reached = 0;
     struct icmp* icmp_hdr;
     display_traceroute_info(data);
     for (; data->hop <= data->max_hop; data->hop++)
@@ -40,11 +40,9 @@ static void ft_traceroute_udp(t_data* data)
         printf(" %d  ", data->hop);
         for (int probe = 1; probe <= data->max_probe; probe++)
         {
-            ((struct sockaddr_in *)data->addr->ai_addr)->sin_port = htons(PORT + probe);
-            char buffer[32];
-            memset(buffer, 48, sizeof(buffer));
+            ((struct sockaddr_in *)data->addr->ai_addr)->sin_port = htons(PORT + probe*data->hop);
             gettimeofday(&data->response.start, NULL);
-            if (sendto(data->sock_udp, buffer, sizeof(buffer), 0,  data->addr->ai_addr, data->addr->ai_addrlen) < 0)
+            if (sendto(data->sock_udp, data->packet_udp, sizeof(data->packet_udp), 0,  data->addr->ai_addr, data->addr->ai_addrlen) < 0)
                 exit_clean(1);
 
             memset(&data->response.buffer, 0, sizeof(data->response.buffer));
@@ -55,17 +53,13 @@ static void ft_traceroute_udp(t_data* data)
             }
             gettimeofday(&data->response.end, NULL);
             icmp_hdr = (struct icmp*)(data->response.buffer + sizeof(struct ip));
-            if (icmp_hdr->icmp_type != ICMP_TIME_EXCEEDED && icmp_hdr->icmp_type != ICMP_DEST_UNREACH)
-            {
-                printf("*  ");
-                continue;
-            }
+            if (icmp_hdr->icmp_type == ICMP_DEST_UNREACH && icmp_hdr->icmp_code == ICMP_PORT_UNREACH)
+                dest_reached = 1;
             display_hop_info(data);
         }
         printf("\n");
-        if (icmp_hdr->icmp_type == ICMP_DEST_UNREACH && icmp_hdr->icmp_code == ICMP_PORT_UNREACH )
+        if (dest_reached == 1)
             exit_clean(0);
-        data->response.is_addr_displayed = 0;
     }
 }
 

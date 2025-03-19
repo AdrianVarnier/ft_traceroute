@@ -22,12 +22,12 @@ void    display_traceroute_info(t_data* data)
 
 void    display_hop_info(t_data* data)
 {
-    if (!data->response.is_addr_displayed)
+    char ip_str[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &data->response.addr.sin_addr, ip_str, sizeof(ip_str));
+    if (strcmp(data->response.last_addr, ip_str) != 0)
     {
-        char ip_str[INET_ADDRSTRLEN];
-        inet_ntop(AF_INET, &data->response.addr.sin_addr, ip_str, sizeof(ip_str));
         printf("%s  ", ip_str);
-        data->response.is_addr_displayed = 1;
+        strcpy(data->response.last_addr, ip_str);
     }
     printf("%.3f ms  ", (data->response.end.tv_sec - data->response.start.tv_sec) * 1000.0
         + (data->response.end.tv_usec - data->response.start.tv_usec) / 1000.0);
