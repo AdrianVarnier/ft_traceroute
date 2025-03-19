@@ -1,7 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_traceroute.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: avarnier <avarnier@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/19 09:19:31 by avarnier          #+#    #+#             */
+/*   Updated: 2025/03/19 09:19:31 by avarnier         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_traceroute.h"
 
 static void ft_traceroute_icmp(t_data *data)
 {
+    int dest_reached = 0;
     display_traceroute_info(data);
     for (; data->hop <= data->max_hop; data->hop++)
     {
@@ -21,10 +34,12 @@ static void ft_traceroute_icmp(t_data *data)
                 continue ;
             }
             gettimeofday(&data->response.end, NULL);
+            if (data->response.addr.sin_addr.s_addr == ((struct sockaddr_in *)data->addr->ai_addr)->sin_addr.s_addr)
+                dest_reached = 1;
             display_hop_info(data);
         }
         printf("\n");
-        if (data->response.addr.sin_addr.s_addr == ((struct sockaddr_in *)data->addr->ai_addr)->sin_addr.s_addr)
+        if (dest_reached == 1)
             exit_clean(0);
     }
 }
