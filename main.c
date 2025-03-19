@@ -8,7 +8,7 @@ static void    init_data(t_data* data)
     data->hop = 1;
     data->max_hop = 30;
     data->max_probe = 3;
-    data->timeout.tv_sec = 1;
+    data->timeout.tv_sec = 5;
     data->interval = 0;
     data->response.addr_len = sizeof(data->response.addr);
 }
